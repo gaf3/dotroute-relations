@@ -1,2 +1,3 @@
-# dotroute-relations-restful
-doTRoute.js libraries for Relations RESTful API
+# dotroute-relations
+
+doTRoute.js libraries for Relations API

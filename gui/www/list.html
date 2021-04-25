@@ -1,0 +1,23 @@
+{{#def.Header}}
+<div class="uk-overflow-container">
+    <form class="uk-form">
+        <button type="button" OnClick="DRApp.go('{{! DRApp.current.controller.singular }}_create')" class="uk-button uk-button-primary">
+            Create
+        </button>
+    </form>
+    <table class="uk-table">
+        <thead>
+            <tr>
+                <th>id</th>
+            </tr>
+        </thead>
+        <tbody>
+{{~it[DRApp.current.controller.plural] :model}}
+            <tr OnClick="DRApp.go('{{! DRApp.current.controller.singular }}_retrieve','{{=model.id}}')" class="clickable">
+                <td>{{=model.id}}</td>
+            </tr>
+{{~}}
+        </tbody>
+    </table>
+</div>
+{{#def.Footer}}
