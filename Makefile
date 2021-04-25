@@ -1,5 +1,4 @@
 VERSION?=0.1.0
-INSTALL=python:3.8.5-alpine3.12
 TILT_PORT=6850
 .PHONY: up down tag untag
 
