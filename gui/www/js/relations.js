@@ -25,12 +25,16 @@ DRApp.rest = function(type, url, data) {
 DRApp.controller("Base", null, {
     home: function() {
         DRApp.render(this.it);
-    },
+    }
+});
+
+DRApp.controller("Model", "Base", {
+    model: null,
     url: function(params) {
         if (params && Object.keys(params).length) {
-            return "api/" + this.singular + "?" + $.param(params);
+            return "api/" + this.model.singular + "?" + $.param(params);
         } else {
-            return "api/" + this.singular;
+            return "api/" + this.model.singular;
         }
     },
     id_url: function() {
@@ -38,9 +42,9 @@ DRApp.controller("Base", null, {
     },
     route: function(action, id) {
         if (id) {
-            DRApp.go(this.singular + "_" + action, id);
+            DRApp.go(this.model.singular + "_" + action, id);
         } else {
-            DRApp.go(this.singular + "_" + action);
+            DRApp.go(this.model.singular + "_" + action);
         }
     },
     list: function() {
@@ -49,7 +53,7 @@ DRApp.controller("Base", null, {
     },
     fields_input: function() {
         var input = {};
-        input[this.singular] = {}
+        input[this.model.singular] = {}
         for (var index = 0; index < this.it.fields.length; index++) {
             var field = this.it.fields[index];
             var value;
@@ -72,11 +76,11 @@ DRApp.controller("Base", null, {
                 } else if (field.kind == "int") {
                     value = Math.round(value);
                 }
-                input[this.singular][field.name] = value;
+                input[this.model.singular][field.name] = value;
             } else if (field.kind == "list") {
-                input[this.singular][field.name] = [];
+                input[this.model.singular][field.name] = [];
             } else if (field.kind == "dict") {
-                input[this.singular][field.name] = {};
+                input[this.model.singular][field.name] = {};
             }
         }
         return input;
@@ -94,8 +98,10 @@ DRApp.controller("Base", null, {
         this.it = DRApp.rest("OPTIONS", this.url(), input);
         if (this.it.errors.length) {
             DRApp.render(this.it);
+        } else if (this.model.id) {
+            this.route("retrieve", DRApp.rest("POST", this.url(), input)[this.model.singular].id);
         } else {
-            this.route("retrieve", DRApp.rest("POST", this.url(), input)[this.singular].id);
+            this.route("list");
         }
     },
     retrieve: function() {
@@ -139,17 +145,19 @@ DRApp.template("Create", DRApp.load("create"), null, DRApp.partials);
 DRApp.template("Retrieve", DRApp.load("retrieve"), null, DRApp.partials);
 DRApp.template("Update", DRApp.load("update"), null, DRApp.partials);
 
-DRApp.model = function(title, singular, plural) {
+DRApp.model = function(model) {
 
-    DRApp.controller(title, "Base", {
-        singular: singular,
-        plural: plural
+    DRApp.controller(model.title, "Model", {
+        model: model
     });
 
-    DRApp.route(singular + "_list", "/" + singular, "List", title, "list");
-    DRApp.route(singular + "_create", "/" + singular + "/create", "Create", title, "create");
-    DRApp.route(singular + "_retrieve", "/" + singular + "/{id:^\\d+$}", "Retrieve", title, "retrieve");
-    DRApp.route(singular + "_update", "/" + singular + "/{id:^\\d+$}/update", "Update", title, "update");
+    DRApp.route(model.singular + "_list", "/" + model.singular, "List", model.title, "list");
+    DRApp.route(model.singular + "_create", "/" + model.singular + "/create", "Create", model.title, "create");
+
+    if (model.id) {
+        DRApp.route(model.singular + "_retrieve", "/" + model.singular + "/{id:^\\d+$}", "Retrieve", model.title, "retrieve");
+        DRApp.route(model.singular + "_update", "/" + model.singular + "/{id:^\\d+$}/update", "Update", model.title, "update");
+    }
 
 };
 
@@ -157,11 +165,7 @@ DRApp.attach = function() {
 
     for (var model = 0; model < DRApp.models.length; model++) {
         if (!DRApp.controllers[DRApp.models[model].name]) {
-            DRApp.model(
-                DRApp.models[model].title,
-                DRApp.models[model].singular,
-                DRApp.models[model].plural
-            );
+            DRApp.model(DRApp.models[model]);
         }
     }
 
