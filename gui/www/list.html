@@ -4,6 +4,13 @@
         <button type="button" OnClick="DRApp.go('{{! DRApp.current.controller.model.singular }}_create')" class="uk-button uk-button-primary">
             Create
         </button>
+        <button type="button" OnClick="DRApp.current.controller.search()" class="uk-button uk-button-primary">
+            Search
+        </button>
+        <input id="like" value="{{!it.like}}" type="text"/>
+        {{? it.overflow}}
+            <i>Too many results returned. Narrow with Search. </i>
+        {{?}}
     </form>
     <table class="uk-table">
         <thead>

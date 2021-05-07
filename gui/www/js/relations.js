@@ -48,8 +48,18 @@ DRApp.controller("Model", "Base", {
         }
     },
     list: function() {
-        this.it = DRApp.rest("GET",this.url());
+        this.it = DRApp.rest("GET", this.url());
+        this.it.like = '';
         DRApp.render(this.it);
+    },
+    search: function() {
+        this.it.like = $("#like").val();
+        if (this.it.like) {
+            this.it = DRApp.rest("GET", this.url() + "?like=" + this.it.like);
+            DRApp.render(this.it);
+        } else {
+            this.list();
+        }
     },
     fields_input: function() {
         var input = {};
