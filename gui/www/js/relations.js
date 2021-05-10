@@ -38,7 +38,7 @@ DRApp.controller("Model", "Base", {
         }
     },
     id_url: function() {
-        return this.url() + "/" + DRApp.current.path.id;
+        return this.url() + "/" + DRApp.current.path;
     },
     route: function(action, id) {
         if (id) {
@@ -108,10 +108,13 @@ DRApp.controller("Model", "Base", {
         this.it = DRApp.rest("OPTIONS", this.url(), input);
         if (this.it.errors.length) {
             DRApp.render(this.it);
-        } else if (this.model.id) {
-            this.route("retrieve", DRApp.rest("POST", this.url(), input)[this.model.singular].id);
         } else {
-            this.route("list");
+            var model = DRApp.rest("POST", this.url(), input)[this.model.singular];
+            if (this.model.id) {
+                this.route("retrieve", model[this.model.id])
+            } else {
+                this.route("list");
+            }
         }
     },
     retrieve: function() {
