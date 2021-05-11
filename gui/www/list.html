@@ -28,8 +28,8 @@
     {{?}}
             >
     {{~DRApp.current.controller.model.list :field}}
-        {{?it.parents[field]}}
-                <td>{{=it.parents[field].labels[model[field]].join(' - ')}}</td>
+        {{?it.formats[field]}}
+                <td>{{=DRApp.format(model[field], it.formats[field].format, it.formats[field].labels)}}</td>
         {{??}}
                 <td>{{=model[field]}}</td>
         {{?}}
