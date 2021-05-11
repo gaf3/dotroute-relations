@@ -1,11 +1,24 @@
 {{~it.fields :field}}
-    {{ var prefix = it.prefix || []; }}
-    {{ var full_name = prefix.concat(field.name).join('-').replace(/\./g, '-'); }}
-    {{ var value = field.kind == "list" || field.kind == "dict" ? JSON.stringify(field.value || field.default, null, 2) : field.value; }}
-    {{ value = value || field.default || (field.multi ? [] : ''); }}
-    {{ var readonly = field.readonly || it.readonly; }}
-    {{ var style = field.kind == "list" || field.kind == "dict" ? "textarea" : field.style; }}
-    {{ var pre = field.name == "yaml" || field.kind == "list" || field.kind == "dict"; }}
+    {{
+        var prefix = it.prefix || [];
+        var full_name = prefix.concat(field.name).join('-').replace(/\./g, '-');
+        var value = field.value;
+        if (value == null) {
+            value = field.original
+        }
+        if (value == null) {
+            value = field.default
+        }
+        if (value== null && field.multi) {
+            value = [];
+        }
+        if (field.kind == "list" || field.kind == "dict" ) {
+            value = JSON.stringify(value, null, 2);
+        }
+        var readonly = field.readonly || it.readonly;
+        var style = field.kind == "list" || field.kind == "dict" ? "textarea" : field.style;
+        var pre = field.name == "yaml" || field.kind == "list" || field.kind == "dict";
+    }}
     {{?field.fields || field.name == "yaml"}}
     <div class="uk-form-row"><hr/></div>
     {{?}}
@@ -23,25 +36,37 @@
                 {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
             >{{=value}}</textarea>
         {{?}}
-    {{??style == "select" && !readonly}}
-            <select id="{{!full_name}}" {{?field.trigger}}OnChange="DRApp.current.controller.fields_change();"{{?}}>
-        {{?field.optional}}
-                <option value=''></option>
-        {{?}}
-        {{~field.options :option}}
-                <option value='{{!option}}' {{?value == option}}selected{{?}}>
-                    {{= field.labels ? field.labels[option] : option}}
-                </option>
-        {{~}}
-            </select>
     {{??field.options}}
-        {{?readonly}}
+        {{?field.readonly}}
             {{?field.multi}}
                 {{~value :option}}
-            {{= field.labels ? field.labels[option] : option}}<br/>
+                    {{= field.labels ? field.labels[option] : option}}<br/>
                 {{~}}
             {{??}}
-            {{= field.labels ? field.labels[value] : value}}<br/>
+                {{= field.labels ? field.labels[value] : value}}<br/>
+            {{?}}
+        {{??style == "select" || field.options > 10 || field.overflow || field.like}}
+            <select id="{{!full_name}}" {{?field.trigger}}OnChange="DRApp.current.controller.fields_change();"{{?}}>
+            {{?field.optional}}
+                <option value=''></option>
+            {{?}}
+            {{~field.options :option}}
+                <option value='{{!option}}' {{?value == option}}selected{{?}}>
+                    {{=DRApp.format(option, field.format, field.labels)}}
+                </option>
+            {{~}}
+            </select>
+            {{?field.options.length > 25 || field.overflow || field.like}}
+            <input
+                id="{{!full_name}}__like" value="{{!field.like || ''}}"
+                type="text"
+            />
+            <button type="button" OnClick="DRApp.current.controller.fields_change()" class="uk-button uk-button-primary">
+                Search
+            </button>
+                {{? field.overflow}}
+                <i>Too many results returned. Narrow with Search. </i>
+                {{?}}
             {{?}}
         {{??}}
             {{~field.options :option}}
@@ -56,12 +81,12 @@
             {{?}}
                 {{?field.trigger}}OnClick="DRApp.current.controller.fields_change();"{{?}}
             />
-            {{= field.labels ? field.labels[option] : option}}<br/>
+                {{=DRApp.format(option, field.format, field.labels)}}<br/>
             {{~}}
         {{?}}
     {{??!field.fields}}
         {{?readonly}}
-            {{= style == "datetime" && value ? (new Date(value*1000)).toLocaleString() : value}}
+            {{=DRApp.format(value, field.format, field.labels)}}
         {{??}}
             <input
                 id="{{!full_name}}"

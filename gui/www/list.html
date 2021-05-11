@@ -28,7 +28,11 @@
     {{?}}
             >
     {{~DRApp.current.controller.model.list :field}}
+        {{?it.formats[field]}}
+                <td>{{=DRApp.format(model[field], it.formats[field].format, it.formats[field].labels)}}</td>
+        {{??}}
                 <td>{{=model[field]}}</td>
+        {{?}}
     {{~}}
             </tr>
 {{~}}

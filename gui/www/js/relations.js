@@ -22,6 +22,23 @@ DRApp.rest = function(type, url, data) {
     return response.responseJSON;
 };
 
+DRApp.format = function(value, format, labels) {
+    if (labels && labels[value]) {
+        value = labels[value];
+    }
+    if (Array.isArray(value)) {
+        var formatted = [];
+        for (var index = 0; index < value.length; index++) {
+            formatted.push(DRApp.format(value[index], format[index]));
+        }
+        return formatted.join(' - ');
+    }
+    if (format == "datetime") {
+        return new Date(value*1000).toLocaleString();
+    }
+    return value == null ? '' : value;
+}
+
 DRApp.controller("Base", null, {
     home: function() {
         DRApp.render(this.it);
@@ -64,15 +81,19 @@ DRApp.controller("Model", "Base", {
     fields_input: function() {
         var input = {};
         input[this.model.singular] = {}
+        input["likes"] = {}
         for (var index = 0; index < this.it.fields.length; index++) {
             var field = this.it.fields[index];
             var value;
             if (field.readonly) {
                 continue
-            } else if (field.options && field.style != "select") {
+            } else if ($('input[name=' + field.name + ']').length) {
                 value = $('input[name=' + field.name + ']:checked').val();
             } else {
                 value = $('#' + field.name).val();
+            }
+            if ($('#' + field.name + '__like').length) {
+                input["likes"][field.name] = $('#' + field.name + '__like').val();
             }
             if (value && value.length) {
                 if (field.options) {
@@ -95,12 +116,13 @@ DRApp.controller("Model", "Base", {
         }
         return input;
     },
-    create: function() {
-        this.it = DRApp.rest("OPTIONS", this.url());
+    fields_change: function() {
+        var url = DRApp.current.path.id ? this.id_url() : this.url();
+        this.it = DRApp.rest("OPTIONS", url, this.fields_input());
         DRApp.render(this.it);
     },
-    create_change: function() {
-        this.it = DRApp.rest("OPTIONS", this.url(), this.fields_input());
+    create: function() {
+        this.it = DRApp.rest("OPTIONS", this.url());
         DRApp.render(this.it);
     },
     create_save: function() {
@@ -108,10 +130,13 @@ DRApp.controller("Model", "Base", {
         this.it = DRApp.rest("OPTIONS", this.url(), input);
         if (this.it.errors.length) {
             DRApp.render(this.it);
-        } else if (this.model.id) {
-            this.route("retrieve", DRApp.rest("POST", this.url(), input)[this.model.singular].id);
         } else {
-            this.route("list");
+            var model = DRApp.rest("POST", this.url(), input)[this.model.singular];
+            if (this.model.id) {
+                this.route("retrieve", model[this.model.id])
+            } else {
+                this.route("list");
+            }
         }
     },
     retrieve: function() {
@@ -120,10 +145,6 @@ DRApp.controller("Model", "Base", {
     },
     update: function() {
         this.it = DRApp.rest("OPTIONS", this.id_url());
-        DRApp.render(this.it);
-    },
-    update_change: function() {
-        this.it = DRApp.rest("OPTIONS", this.id_url(), this.fields_input());
         DRApp.render(this.it);
     },
     update_save: function() {

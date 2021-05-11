@@ -26,6 +26,8 @@ class Person(Base):
     Person model
     """
 
+    CHUNK = 2
+
     id = int
     name = str
     status = ["active", "inactive"]
