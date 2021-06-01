@@ -89,13 +89,22 @@ DRApp.controller("Model", "Base", {
                 continue
             } else if ($('input[name=' + field.name + ']').length) {
                 value = $('input[name=' + field.name + ']:checked').val();
+            } else if (field.init) {
+                value = {};
+                var inits = Object.values(field.init);
+                for (var init = 0; init < inits.length; init++) {
+                    var attr = $('#' + field.name + '__' + inits[init]).val();
+                    if (attr != '') {
+                        value[inits[init]] = attr;
+                    }
+                }
             } else {
                 value = $('#' + field.name).val();
             }
             if ($('#' + field.name + '__like').length) {
                 input["likes"][field.name] = $('#' + field.name + '__like').val();
             }
-            if (value && value.length) {
+            if (value && (value.length || field.init)) {
                 if (field.options) {
                     for (var option = 0; option < field.options.length; option++) {
                         if (value == field.options[option]) {
@@ -107,7 +116,9 @@ DRApp.controller("Model", "Base", {
                 } else if (field.kind == "int") {
                     value = Math.round(value);
                 }
-                input[this.model.singular][field.name] = value;
+                if (!field.init || Object.keys(value).length) {
+                    input[this.model.singular][field.name] = value;
+                }
             } else if (field.kind == "list") {
                 input[this.model.singular][field.name] = [];
             } else if (field.kind == "dict") {
