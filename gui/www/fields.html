@@ -12,12 +12,12 @@
         if (value== null && field.multi) {
             value = [];
         }
-        if (field.kind == "list" || field.kind == "dict" ) {
+        var readonly = field.readonly || it.readonly;
+        if (field.kind == "list" || field.kind == "dict" || (field.init && readonly)) {
             value = JSON.stringify(value, null, 2);
         }
-        var readonly = field.readonly || it.readonly;
-        var style = field.kind == "list" || field.kind == "dict" ? "textarea" : field.style;
-        var pre = field.name == "yaml" || field.kind == "list" || field.kind == "dict";
+        var style = field.kind == "list" || field.kind == "dict" || (field.init && readonly) ? "textarea" : field.style;
+        var pre = field.name == "yaml" || field.kind == "list" || field.kind == "dict" || field.init;
     }}
     {{?field.fields || field.name == "yaml"}}
     <div class="uk-form-row"><hr/></div>
@@ -27,7 +27,7 @@
         <div class="uk-form-controls">
     {{?style == "textarea"}}
         {{?readonly}}
-            {{?pre}}<pre>{{?}}{{=value}}{{?pre}}</pre>{{?}}
+            {{?pre}}<pre>{{?}}{{=value || ''}}{{?pre}}</pre>{{?}}
         {{??}}
             <textarea
                 rows='7' cols='42'
@@ -86,13 +86,8 @@
         {{?}}
     {{??!field.fields}}
         {{?field.init}}
-            {{ var inits = Object.values(field.init); }}
-            {{ var attrs = value ? Object.keys(value).sort() : inits; }}
-            {{~attrs :attr}}
+            {{~Object.values(field.init) :attr}}
             <strong>{{= attr }}</strong>
-                {{? readonly || inits.indexOf(attr) < 0 }}
-            {{= value ? DRApp.format(value[attr]) : ''}}
-                {{??}}
             <input
                 id="{{!full_name}}__{{!attr}}"
                 placeholder="{{!attr}}"
@@ -100,7 +95,6 @@
                 {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
                 type="text"
             />
-                {{?}}
             <br/>
             {{~}}
         {{??}}
