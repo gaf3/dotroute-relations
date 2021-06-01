@@ -85,16 +85,36 @@
             {{~}}
         {{?}}
     {{??!field.fields}}
-        {{?readonly}}
-            {{=DRApp.format(value, field.format, field.labels)}}
-        {{??}}
+        {{?field.init}}
+            {{ var inits = Object.values(field.init); }}
+            {{ var attrs = value ? Object.keys(value).sort() : inits; }}
+            {{~attrs :attr}}
+            <strong>{{= attr }}</strong>
+                {{? readonly || inits.indexOf(attr) < 0 }}
+            {{= value ? DRApp.format(value[attr]) : ''}}
+                {{??}}
             <input
-                id="{{!full_name}}"
-                placeholder="{{!field.label || field.name}}"
-                value="{{!value}}"
+                id="{{!full_name}}__{{!attr}}"
+                placeholder="{{!attr}}"
+                value="{{!value ? DRApp.format(value[attr]) : ''}}"
                 {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
                 type="text"
             />
+                {{?}}
+            <br/>
+            {{~}}
+        {{??}}
+            {{?readonly}}
+            {{=DRApp.format(value, field.format, field.labels)}}
+            {{??}}
+            <input
+                id="{{!full_name}}"
+                placeholder="{{!field.label || field.name}}"
+                value="{{!DRApp.format(value)}}"
+                {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
+                type="text"
+            />
+            {{?}}
         {{?}}
             <br/>
     {{?}}
