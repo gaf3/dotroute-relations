@@ -39,6 +39,50 @@ DRApp.format = function(value, format, labels) {
     return value == null ? '' : value;
 }
 
+DRApp.get = function(values, path) {
+
+    if (typeof path === 'string' || path instanceof String) {
+        path = path.split('__');
+    }
+
+    for (var index = 0; index < path.length; index++) {
+
+        place = path[index];
+
+        if (place.match(/^-?\d+$/)) {
+            if (values == null) {
+                values = [];
+            }
+            place = parseInt(place);
+        } else {
+            if (values == null) {
+                values = {};
+            }
+            if (place[0] == '_') {
+                place = place.slice(1);
+            }
+        }
+
+        if (index < path.length - 1) {
+
+            var next = path[index+1].match(/^-?\d+$/) ? [] : {};
+
+            if (!Array.isArray(values)) {
+                values = values[place] || next;
+            } else if ((place > -1 ? place : Math.abs(place + 1)) > values.length - 1 || values[place] == null) {
+                values = next;
+            } else {
+                values = values[place];
+            }
+
+        }
+
+    }
+
+    return values[place];
+
+}
+
 DRApp.controller("Base", null, {
     home: function() {
         DRApp.render(this.it);
