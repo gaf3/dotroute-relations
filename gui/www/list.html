@@ -31,7 +31,7 @@
         {{?it.formats[field]}}
                 <td>{{=DRApp.format(model[field], it.formats[field].format, it.formats[field].labels)}}</td>
         {{??}}
-                <td>{{=model[field]}}</td>
+                <td>{{=DRApp.get(model, field)}}</td>
         {{?}}
     {{~}}
             </tr>

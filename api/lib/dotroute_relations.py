@@ -66,8 +66,7 @@ class Meta(Base):
     flag = bool
     spend = float
     stuff = list
-    things = dict
-    pull = str, {"extract": "things__for__0___1"}
+    things = dict, {"extract": "for__0___1"}
     push = str, {"inject": "stuff__-1__relations.io___1"}
 
 
@@ -84,19 +83,17 @@ def subnet_attr(values, value):
 class Net(Base):
 
     id = int
-    ip_address = str, {"extract": "ip__address"}
-    ip_value = int, {"extract": "ip__value"}
     ip = ipaddress.IPv4Address, {
         "attr": {"compressed": "address", "__int__": "value"},
         "init": "address",
         "label": "address",
-        "required": True
+        "extract": {"address": str, "value": int}
     }
     subnet = ipaddress.IPv4Network, {
         "attr": subnet_attr,
         "init": "address",
-        "label": "address",
-        "required": True
+        "label": "address"
     }
 
-    INDEX = "ip_value"
+    LABEL = "ip__address"
+    INDEX = "ip__value"

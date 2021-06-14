@@ -1,6 +1,6 @@
 ACCOUNT=gaf3
 IMAGE=dotroute-relations-gui
-VERSION?=0.1.0
+VERSION?=dev
 NAME=$(IMAGE)-$(ACCOUNT)
 
 .PHONY: build shell push install update remove reset
