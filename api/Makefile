@@ -3,8 +3,7 @@ IMAGE=dotroute-relations-api
 VERSION?=dev
 DEBUG_PORT=16850
 TTY=$(shell if tty -s; then echo "-it"; fi)
-VOLUMES=-v ${PWD}/dep:/opt/service/dep \
-		-v ${PWD}/lib/:/opt/service/lib/ \
+VOLUMES=-v ${PWD}/lib/:/opt/service/lib/ \
 		-v ${PWD}/bin/:/opt/service/bin/ \
 		-v ${PWD}/test/:/opt/service/test/ \
 		-v ${PWD}/.pylintrc:/opt/service/.pylintrc

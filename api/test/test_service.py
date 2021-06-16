@@ -61,7 +61,7 @@ class TestAPI(TestRestful):
 
         app = service.build()
 
-        self.assertEqual(app.name, "opengui-api")
+        self.assertEqual(app.name, "dotroute-relations-api")
 
 
 class TestHealth(TestRestful):
