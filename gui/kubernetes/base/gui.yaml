@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: gui
-        image: docker.io/gaf3/dotroute-relations-gui:0.1.2
+        image: dotroute-relations-gui
         imagePullPolicy: Always
         ports:
         - containerPort: 80
