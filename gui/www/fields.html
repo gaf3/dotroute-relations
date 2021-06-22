@@ -37,7 +37,7 @@
             >{{=value}}</textarea>
         {{?}}
     {{??field.options}}
-        {{?field.readonly}}
+        {{?readonly}}
             {{?field.multi}}
                 {{~value :option}}
                     {{= field.labels ? field.labels[option] : option}}<br/>
