@@ -113,6 +113,12 @@ DRApp.controller("Model", "Base", {
         this.it.like = '';
         DRApp.render(this.it);
     },
+    like: function(event) {
+        if (event.keyCode == 10 || event.keyCode == 13) {
+            event.preventDefault();
+            this.search();
+        }
+    },
     search: function() {
         this.it.like = $("#like").val();
         if (this.it.like) {
