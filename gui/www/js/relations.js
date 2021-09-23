@@ -27,11 +27,15 @@ DRApp.format = function(value, format, labels) {
         value = labels[value];
     }
     if (Array.isArray(value)) {
-        var formatted = [];
-        for (var index = 0; index < value.length; index++) {
-            formatted.push(DRApp.format(value[index], format[index]));
+        if (format) {
+            var formatted = [];
+            for (var index = 0; index < value.length; index++) {
+                formatted.push(DRApp.format(value[index], format[index]));
+            }
+            return formatted.join(' - ');
+        } else {
+            return value.join(" ")
         }
-        return formatted.join(' - ');
     }
     if (format == "datetime") {
         return new Date(value*1000).toLocaleString();
@@ -138,7 +142,11 @@ DRApp.controller("Model", "Base", {
             if (field.readonly) {
                 continue
             } else if ($('input[name=' + field.name + ']').length) {
-                value = $('input[name=' + field.name + ']:checked').val();
+                if (field.kind == "set") {
+                    value = $('input[name=' + field.name + ']:checked').map(function() {return $(this).val(); }).get();
+                } else {
+                    value = $('input[name=' + field.name + ']:checked').val();
+                }
             } else if (field.init) {
                 value = {};
                 var inits = Object.values(field.init);
@@ -148,6 +156,8 @@ DRApp.controller("Model", "Base", {
                         value[inits[init]] = attr;
                     }
                 }
+            } else if (field.kind == "set") {
+                value = $('#' + field.name).val().split(/ +/);
             } else {
                 value = $('#' + field.name).val();
             }
@@ -169,7 +179,7 @@ DRApp.controller("Model", "Base", {
                 if (!field.init || Object.keys(value).length) {
                     input[this.model.singular][field.name] = value;
                 }
-            } else if (field.kind == "list") {
+            } else if (field.kind == "set" || field.kind == "list") {
                 input[this.model.singular][field.name] = [];
             } else if (field.kind == "dict") {
                 input[this.model.singular][field.name] = {};
