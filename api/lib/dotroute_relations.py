@@ -65,6 +65,7 @@ class Meta(Base):
     name = str
     flag = bool
     spend = float
+    people = set
     stuff = list
     things = dict, {"extract": "for__0___1"}
     push = str, {"inject": "stuff__-1__relations.io___1"}
@@ -83,6 +84,7 @@ def subnet_attr(values, value):
 class Net(Base):
 
     id = int
+    proto = {"UDP", "TCP"}
     ip = ipaddress.IPv4Address, {
         "attr": {"compressed": "address", "__int__": "value"},
         "init": "address",
