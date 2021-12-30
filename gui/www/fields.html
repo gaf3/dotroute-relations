@@ -97,6 +97,18 @@
             />
             <br/>
             {{~}}
+        {{??field.kind == "bool"}}
+            {{?readonly}}
+            {{= value ? 'true' : 'false' }}
+            {{??}}
+            <input
+                id="{{!full_name}}"
+                value="1"
+                type="checkbox"
+                {{?value}}checked{{?}}
+                {{?field.trigger}}OnClick="DRApp.current.controller.fields_change();"{{?}}
+            />
+            {{?}}
         {{??}}
             {{?readonly}}
             {{=DRApp.format(value, field.format, field.labels)}}

@@ -158,6 +158,8 @@ DRApp.controller("Model", "Base", {
                 }
             } else if (field.kind == "set") {
                 value = $('#' + field.name).val().split(/ +/);
+            } else if (field.kind == "bool") {
+                value = $('#' + field.name).prop('checked');
             } else {
                 value = $('#' + field.name).val();
             }
@@ -179,6 +181,8 @@ DRApp.controller("Model", "Base", {
                 if (!field.init || Object.keys(value).length) {
                     input[this.model.singular][field.name] = value;
                 }
+            } else if (field.kind == "bool") {
+                input[this.model.singular][field.name] = value;
             } else if (field.kind == "set" || field.kind == "list") {
                 input[this.model.singular][field.name] = [];
             } else if (field.kind == "dict") {
