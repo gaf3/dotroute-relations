@@ -23,7 +23,7 @@
     <div class="uk-form-row"><hr/></div>
     {{?}}
     <div class="uk-form-row">
-        <label class="uk-form-label" for="{{=field.name}}"><strong>{{=field.label || field.name}}</strong></label>
+        <label class="uk-form-label" for="{{=field.name}}"><strong>{{=field.title || field.name}}</strong></label>
         <div class="uk-form-controls">
     {{?style == "textarea"}}
         {{?readonly}}
@@ -32,7 +32,7 @@
             <textarea
                 rows='7' cols='42'
                 id="{{!full_name}}"
-                placeholder="{{!field.label || field.name}}"
+                placeholder="{{!field.title || field.name}}"
                 {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
             >{{=value}}</textarea>
         {{?}}
@@ -115,7 +115,7 @@
             {{??}}
             <input
                 id="{{!full_name}}"
-                placeholder="{{!field.label || field.name}}"
+                placeholder="{{!field.title || field.name}}"
                 value="{{!DRApp.format(value)}}"
                 {{?field.trigger}}OnInput="DRApp.current.controller.fields_change();"{{?}}
                 type="text"

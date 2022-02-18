@@ -144,7 +144,6 @@ DRApp.controller("Model", "Base", {
             } else if ($('input[name=' + field.name + ']').length) {
                 if (field.kind == "set") {
                     value = $('input[name=' + field.name + ']:checked').map(function() {return $(this).val(); }).get();
-                    console.log(value);
                 } else {
                     value = $('input[name=' + field.name + ']:checked').val();
                 }
@@ -167,11 +166,8 @@ DRApp.controller("Model", "Base", {
             if ($('#' + field.name + '__like').length) {
                 input["likes"][field.name] = $('#' + field.name + '__like').val();
             }
-            console.log("pre")
-            console.log(value)
             if (value && (value.length || field.init)) {
                 if (field.options) {
-                    console.log(field.name)
                     for (var option = 0; option < field.options.length; option++) {
                         if (Array.isArray(value)) {
                             for (var val = 0; val < value.length; val++) {
@@ -201,7 +197,6 @@ DRApp.controller("Model", "Base", {
                 input[this.model.singular][field.name] = {};
             }
         }
-        console.log(input)
         return input;
     },
     fields_change: function() {
