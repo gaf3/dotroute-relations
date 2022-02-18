@@ -40,10 +40,10 @@
         {{?readonly}}
             {{?field.multi || field.kind == "set"}}
                 {{~value :option}}
-                    {{= field.labels ? field.labels[option] : option}}<br/>
+                    {{= field.titles ? field.titles[option] : option}}<br/>
                 {{~}}
             {{??}}
-                {{= field.labels ? field.labels[value] : value}}<br/>
+                {{= field.titles ? field.titles[value] : value}}<br/>
             {{?}}
         {{??style == "select" || field.options > 10 || field.overflow || field.like}}
             <select id="{{!full_name}}" {{?field.trigger}}OnChange="DRApp.current.controller.fields_change();"{{?}}>
@@ -52,7 +52,7 @@
             {{?}}
             {{~field.options :option}}
                 <option value='{{!option}}' {{?value == option}}selected{{?}}>
-                    {{=DRApp.format(option, field.format, field.labels)}}
+                    {{=DRApp.format(option, field.format, field.titles)}}
                 </option>
             {{~}}
             </select>
@@ -81,7 +81,7 @@
             {{?}}
                 {{?field.trigger}}OnClick="DRApp.current.controller.fields_change();"{{?}}
             />
-                {{=DRApp.format(option, field.format, field.labels)}}<br/>
+                {{=DRApp.format(option, field.format, field.titles)}}<br/>
             {{~}}
         {{?}}
     {{??!field.fields}}
@@ -111,7 +111,7 @@
             {{?}}
         {{??}}
             {{?readonly}}
-            {{=DRApp.format(value, field.format, field.labels)}}
+            {{=DRApp.format(value, field.format, field.titles)}}
             {{??}}
             <input
                 id="{{!full_name}}"

@@ -29,7 +29,7 @@
             >
     {{~DRApp.current.controller.model.list :field}}
         {{?it.formats[field]}}
-                <td>{{=DRApp.format(model[field], it.formats[field].format, it.formats[field].labels)}}</td>
+                <td>{{=DRApp.format(model[field], it.formats[field].format, it.formats[field].titles)}}</td>
         {{??}}
                 <td>{{=DRApp.get(model, field)}}</td>
         {{?}}

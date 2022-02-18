@@ -88,14 +88,14 @@ class Net(Base):
     ip = ipaddress.IPv4Address, {
         "attr": {"compressed": "address", "__int__": "value"},
         "init": "address",
-        "label": "address",
+        "titles": "address",
         "extract": {"address": str, "value": int}
     }
     subnet = ipaddress.IPv4Network, {
         "attr": subnet_attr,
         "init": "address",
-        "label": "address"
+        "titles": "address"
     }
 
-    LABEL = "ip__address"
+    TITLES = "ip__address"
     INDEX = "ip__value"
