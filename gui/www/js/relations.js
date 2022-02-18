@@ -22,9 +22,9 @@ DRApp.rest = function(type, url, data) {
     return response.responseJSON;
 };
 
-DRApp.format = function(value, format, labels) {
-    if (labels && labels[value]) {
-        value = labels[value];
+DRApp.format = function(value, format, titles) {
+    if (titles && titles[value]) {
+        value = titles[value];
     }
     if (Array.isArray(value)) {
         if (format) {
@@ -169,8 +169,16 @@ DRApp.controller("Model", "Base", {
             if (value && (value.length || field.init)) {
                 if (field.options) {
                     for (var option = 0; option < field.options.length; option++) {
-                        if (value == field.options[option]) {
-                            value = field.options[option];
+                        if (Array.isArray(value)) {
+                            for (var val = 0; val < value.length; val++) {
+                                if (value[val] == field.options[option]) {
+                                    value[val] = field.options[option];
+                                }
+                            }
+                        } else {
+                            if (value == field.options[option]) {
+                                value = field.options[option];
+                            }
                         }
                     }
                 } else if (field.kind == "list" || field.kind == "dict") {
