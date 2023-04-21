@@ -1,6 +1,5 @@
-git+https://github.com/gaf3/opengui.git@0.8.3#egg=opengui
-git+https://github.com/relations-dil/python-relations.git@0.6.9#egg=python-relations
-git+https://github.com/relations-dil/python-relations-restx.git@0.2.0#egg=python-relations-restx
+opengui==0.9.0
+relations-restx==0.6.2
 ptvsd==4.3.2
 coverage==5.2.1
 pylint==2.5.3

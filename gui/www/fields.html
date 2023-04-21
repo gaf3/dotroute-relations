@@ -40,10 +40,10 @@
         {{?readonly}}
             {{?field.multi || field.kind == "set"}}
                 {{~value :option}}
-                    {{= field.titles ? field.titles[option] : option}}<br/>
+                    {{= DRApp.format(option, field.format, field.titles) }}<br/>
                 {{~}}
             {{??}}
-                {{= field.titles ? field.titles[value] : value}}<br/>
+                {{= DRApp.format(value, field.format, field.titles) }}<br/>
             {{?}}
         {{??style == "select" || field.options > 10 || field.overflow || field.like}}
             <select id="{{!full_name}}" {{?field.trigger}}OnChange="DRApp.current.controller.fields_change();"{{?}}>
